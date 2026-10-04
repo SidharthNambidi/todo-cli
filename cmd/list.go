@@ -3,6 +3,7 @@ package cmd
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"text/tabwriter"
 	"time"
@@ -41,8 +42,11 @@ func runList(path string, args []string) error {
 	if err := todo.SortTasks(tasks, *sortBy); err != nil {
 		return err
 	}
+	return printTasks(os.Stdout, tasks, now)
+}
 
-	w := tabwriter.NewWriter(os.Stdout, 0, 4, 2, ' ', 0)
+func printTasks(out io.Writer, tasks []todo.Task, now time.Time) error {
+	w := tabwriter.NewWriter(out, 0, 4, 2, ' ', 0)
 	fmt.Fprintln(w, "ID\tDONE\tPRI\tDUE\tCATEGORY\tTASK")
 	for _, t := range tasks {
 		mark := " "

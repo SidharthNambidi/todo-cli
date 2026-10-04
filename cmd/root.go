@@ -35,12 +35,17 @@ func Execute(args []string) error {
 	return h(path, args[1:])
 }
 
+var errNoSave = errors.New("no changes to save")
+
 func withList(path string, fn func(*todo.List) error) error {
 	l, err := todo.Load(path)
 	if err != nil {
 		return err
 	}
 	if err := fn(l); err != nil {
+		if errors.Is(err, errNoSave) {
+			return nil
+		}
 		return err
 	}
 	return todo.Save(path, l)

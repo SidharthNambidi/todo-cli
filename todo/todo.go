@@ -156,6 +156,14 @@ func (l *List) index(id int) (int, error) {
 	return -1, fmt.Errorf("no task with id %d", id)
 }
 
+func (l *List) Get(id int) (Task, error) {
+	i, err := l.index(id)
+	if err != nil {
+		return Task{}, err
+	}
+	return l.Tasks[i], nil
+}
+
 // Edit describes changes to a task. A nil field means "leave unchanged".
 type Edit struct {
 	Title    *string
